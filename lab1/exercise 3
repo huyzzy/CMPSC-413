@@ -1,0 +1,56 @@
+import random
+import time
+
+
+def find_min(list, low, high):
+    if low == high:
+        return list[low]  # Only one element, return it as min
+    if high == low + 1:
+        return min(list[low], list[high])  # Compare two elements, return the smaller one
+    
+    mid = (low + high) // 2
+    min1 = find_min(list, low, mid)
+    min2 = find_min(list, mid + 1, high)
+    
+    return min(min1, min2)
+
+def find_max(list, low, high):
+    if low == high:
+        return list[low]  # Only one element, return it as max
+    if high == low + 1:
+        return max(list[low], list[high])  # Compare two elements, return the larger one
+    
+    mid = (low + high) // 2
+    max1 = find_max(list, low, mid)
+    max2 = find_max(list, mid + 1, high)
+    
+    return max(max1, max2)
+
+
+
+list_2500 = [random.randint(1, 100000) for _ in range(2500)]
+list_5000 = [random.randint(1, 100000) for _ in range(5000)]
+
+# CPU time for finding minimum and maximum separately for 2500 elements
+start_time1 = time.perf_counter()
+min_2500 = find_min(list_2500, 0, len(list_2500) - 1)
+end_time1 = time.perf_counter()
+
+start_time2 = time.perf_counter()
+max_2500 = find_max(list_2500, 0, len(list_2500) - 1)
+end_time2 = time.perf_counter()
+
+# CPU time for finding minimum and maximum separately for 5000 elements
+start_time3 = time.perf_counter()
+min_5000 = find_min(list_5000, 0, len(list_5000) - 1)
+end_time3 = time.perf_counter()
+
+start_time4 = time.perf_counter()
+max_5000 = find_max(list_5000, 0, len(list_5000) - 1)
+end_time4 = time.perf_counter()
+
+# Output results
+print("Min (2500):",min_2500,end_time1-start_time1,"\n")
+print("Max (2500):",max_2500,end_time2-start_time2,"\n")
+print("Min (5000):",min_5000,end_time3-start_time3,"\n")
+print("Max (5000):",max_5000,end_time4-start_time4)
