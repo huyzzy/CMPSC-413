@@ -1,0 +1,91 @@
+def insertionSort(arr):
+    n = len(arr)      
+    if n <= 1:
+        return  
+    for i in range(1, n):  
+        key = arr[i]  
+        j = i-1
+        while j >= 0 and key < arr[j]:  
+            arr[j+1] = arr[j]  
+            j -= 1
+        arr[j+1] = key  
+
+insertion = [12, 11, 13, 5, 6]
+insertionSort(insertion)
+print("Insertion sort:")
+print(insertion)
+
+
+#######################################################################################
+
+
+def selectionSort(array, size):
+    
+    for ind in range(size):
+        min_index = ind
+ 
+        for j in range(ind + 1, size):
+            # select the minimum element in every iteration
+            if array[j] < array[min_index]:
+                min_index = j
+         # swapping the elements to sort the array
+        (array[ind], array[min_index]) = (array[min_index], array[ind])
+ 
+selection = [-2, 45, 0, 11, -9,88,-97,-202,747]
+size = len(selection)
+selectionSort(selection, size)
+print('Selection sort:')
+print(selection)
+
+
+####################################################################################
+
+
+def bubble_sort(arr):
+
+    # Outer loop to iterate through the list n times
+    for n in range(len(arr) - 1, 0, -1):
+
+        # Inner loop to compare adjacent elements
+        for i in range(n):
+            if arr[i] > arr[i + 1]:
+
+                # Swap elements if they are in the wrong order
+                swapped = True
+                arr[i], arr[i + 1] = arr[i + 1], arr[i]
+
+
+# Sample list to be sorted
+bubble = [39, 12, 18, 85, 72, 10, 2, 18]
+bubble_sort(bubble)
+
+print("Bubble sorted:")
+print(bubble)
+
+
+def merge(left, right):
+    result = []
+    i ,j = 0, 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result += left[i:]
+    result += right[j:]
+    return result
+
+def mergesort(list):
+    if len(list) < 2:
+        return list
+    middle = len(list) // 2
+    left = mergesort(list[:middle])
+    right = mergesort(list[middle:])
+    return merge(left, right)
+
+merge_list = [70, 16, 21, 45, 24, 55, 22, 44, 15]
+print("Merge sorted:")
+print(mergesort(merge_list))
+
