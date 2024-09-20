@@ -67,9 +67,9 @@ def mergesort(arr):
 
 # Measure sorting time function
 def measure_sorting_time(sorting_function, arr):
-    start_time = time.time()
+    start_time = time.perf_counter()
     sorting_function(arr)
-    end_time = time.time()
+    end_time = time.perf_counter()
     return end_time - start_time
 
 # Apply sorting algorithms on the repeated data and record time
@@ -86,8 +86,8 @@ bubble_sort_time = measure_sorting_time(bubble_sort, data_copy)
 print("Bubble Sort:", bubble_sort_time)
 
 data_copy = copy.deepcopy(data_list_repeated)
-start_time = time.time()
+start_time = time.perf_counter()
 mergesort(data_copy)
-end_time = time.time()
+end_time = time.perf_counter()
 merge_sort_time = end_time - start_time
 print("Merge Sort:", merge_sort_time)
