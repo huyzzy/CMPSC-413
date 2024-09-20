@@ -1,0 +1,93 @@
+import pandas as pd
+import time
+import copy
+
+# Load the CSV file into a pandas DataFrame
+file_path = 'C:\\Users\\khuy1\\Downloads\\ai_job_market_insights.csv'
+data = pd.read_csv(file_path)
+
+# Create repeated data with 1000 identical rows
+repeated_row = data.iloc[0].tolist()
+num_rows = 1000
+same_data_df = pd.DataFrame([repeated_row] * num_rows, columns=data.columns)
+data_list_repeated = same_data_df.values.tolist()
+
+# Sorting Algorithms
+
+# Insertion Sort
+def insertionSort(arr):
+    n = len(arr)
+    for i in range(1, n):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+# Selection Sort
+def selectionSort(arr):
+    size = len(arr)
+    for ind in range(size):
+        min_index = ind
+        for j in range(ind + 1, size):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        arr[ind], arr[min_index] = arr[min_index], arr[ind]
+
+# Bubble Sort
+def bubble_sort(arr):
+    for n in range(len(arr) - 1, 0, -1):
+        for i in range(n):
+            if arr[i] > arr[i + 1]:
+                arr[i], arr[i + 1] = arr[i + 1], arr[i]
+
+# Merge Sort and Helper
+def merge(left, right):
+    result = []
+    i, j = 0, 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result += left[i:]
+    result += right[j:]
+    return result
+
+def mergesort(arr):
+    if len(arr) < 2:
+        return arr
+    middle = len(arr) // 2
+    left = mergesort(arr[:middle])
+    right = mergesort(arr[middle:])
+    return merge(left, right)
+
+# Measure sorting time function
+def measure_sorting_time(sorting_function, arr):
+    start_time = time.time()
+    sorting_function(arr)
+    end_time = time.time()
+    return end_time - start_time
+
+# Apply sorting algorithms on the repeated data and record time
+data_copy = copy.deepcopy(data_list_repeated)
+selection_sort_time = measure_sorting_time(selectionSort, data_copy)
+print("Selection Sort:", selection_sort_time)
+
+data_copy = copy.deepcopy(data_list_repeated)
+insertion_sort_time = measure_sorting_time(insertionSort, data_copy)
+print("Insertion Sort:", insertion_sort_time)
+
+data_copy = copy.deepcopy(data_list_repeated)
+bubble_sort_time = measure_sorting_time(bubble_sort, data_copy)
+print("Bubble Sort:", bubble_sort_time)
+
+data_copy = copy.deepcopy(data_list_repeated)
+start_time = time.time()
+mergesort(data_copy)
+end_time = time.time()
+merge_sort_time = end_time - start_time
+print("Merge Sort:", merge_sort_time)
