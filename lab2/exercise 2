@@ -1,0 +1,153 @@
+import pandas as pd
+import time
+import copy
+
+# Load the CSV file into a pandas DataFrame
+file_path = "C:\\Users\\khuy1\\Downloads\\ai_job_market_insights.csv"
+data = pd.read_csv(file_path)
+
+# Convert the data to a list of lists for sorting
+data_list = data.values.tolist()
+
+# Sorting Algorithms
+
+# Insertion Sort
+def insertionSort(arr):
+    n = len(arr)
+    if n <= 1:
+        return
+    for i in range(1, n):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+# Selection Sort
+def selectionSort(arr, size):
+    for ind in range(size):
+        min_index = ind
+        for j in range(ind + 1, size):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        arr[ind], arr[min_index] = arr[min_index], arr[ind]
+
+# Bubble Sort
+def bubble_sort(arr):
+    for n in range(len(arr) - 1, 0, -1):
+        for i in range(n):
+            if arr[i] > arr[i + 1]:
+                arr[i], arr[i + 1] = arr[i + 1], arr[i]
+
+# Merge Sort and Helper
+def merge(left, right):
+    result = []
+    i, j = 0, 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result += left[i:]
+    result += right[j:]
+    return result
+
+def mergesort(arr):
+    if len(arr) < 2:
+        return arr
+    middle = len(arr) // 2
+    left = mergesort(arr[:middle])
+    right = mergesort(arr[middle:])
+    return merge(left, right)
+
+# Measure sorting time function
+def measure_sorting_time(sorting_function, arr):
+    start_time = time.time()
+    
+    # Handle selectionSort which requires a 'size' argument
+    if sorting_function == selectionSort:
+        sorting_function(arr, len(arr))
+    else:
+        sorting_function(arr)
+    
+    end_time = time.time()
+    return end_time - start_time
+
+# Sorting time measurement
+user_sorting_algorithms = {
+    "Selection Sort": lambda arr: selectionSort(arr, len(arr)),
+    "Insertion Sort": insertionSort,
+    "Bubble Sort": bubble_sort,
+    "Merge Sort": mergesort,
+}
+
+# Extract key_index for "Location" column (3rd column in data)
+key_index = 3
+
+# Measure and store sorting times for each algorithm
+user_sorting_times = {}
+data_copy = copy.deepcopy(data_list)
+
+# Selection Sort
+start_time = time.time()
+selectionSort([row[key_index] for row in data_copy], len(data_copy))
+end_time = time.time()
+selection_sort_time = end_time - start_time
+print("Selection Sort:",selection_sort_time)
+
+# Insertion Sort
+start_time = time.time()
+insertionSort([row[key_index] for row in data_copy])
+end_time = time.time()
+insertion_sort_time = end_time - start_time
+print("Insertion Sort:",insertion_sort_time)
+
+# Bubble Sort
+start_time = time.time()
+bubble_sort([row[key_index] for row in data_copy])
+end_time = time.time()
+bubble_sort_time = end_time - start_time
+print("Bubble Sort:", bubble_sort_time)
+
+# Merge Sort
+extracted = [(row[key_index], row) for row in data_copy]
+start_time = time.time()
+sorted_extracted_keys = mergesort([x[0] for x in extracted])
+sorted_data = [row for key in sorted_extracted_keys for k, row in extracted if k == key]
+end_time = time.time()
+merge_sort_time = end_time - start_time
+print("Merge Sort:", merge_sort_time)
+
+
+
+# Step 1: Sort the data by "Location" using Python's built-in sort
+data_list.sort(key=lambda x: x[3])  # Assuming the "Location" column is at index 3
+sorted_data = copy.deepcopy(data_list)
+
+# Step 2: Apply sorting algorithms on the already sorted data and record time
+
+# Selection Sort
+data_copy = copy.deepcopy(sorted_data)
+selection_sort_time = measure_sorting_time(selectionSort, data_copy)
+print("Selection Sort (Sorted):", selection_sort_time)
+
+# Insertion Sort
+data_copy = copy.deepcopy(sorted_data)
+insertion_sort_time = measure_sorting_time(insertionSort, data_copy)
+print("Insertion Sort (Sorted):", insertion_sort_time)
+
+# Bubble Sort
+data_copy = copy.deepcopy(sorted_data)
+bubble_sort_time = measure_sorting_time(bubble_sort, data_copy)
+print("Bubble Sort (Sorted):", bubble_sort_time)
+
+# Merge Sort
+data_copy = copy.deepcopy(sorted_data)
+start_time = time.time()
+mergesort(data_copy)
+end_time = time.time()
+merge_sort_time = end_time - start_time
+print("Merge Sort (Sorted):", merge_sort_time)
