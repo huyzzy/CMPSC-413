@@ -1,0 +1,84 @@
+import heapq
+
+class PriorityQueueHeap:
+    def __init__(self, min_queue=True):
+        self.heap = []
+        self.min_queue = min_queue  # True for min-heap, False for max-heap
+        self.entry_finder = {}  # To track positions of items for change priority
+
+    def insert(self, item, priority):
+        # For max-heap, invert the priority
+        if not self.min_queue:
+            priority = -priority
+        # Add the item to the heap
+        heapq.heappush(self.heap, (priority, item))
+        self.entry_finder[item] = priority
+
+    def peek(self):
+        if not self.heap:
+            raise IndexError("peek from an empty priority queue")
+        # Return the highest priority item (smallest in min-heap)
+        return self.heap[0][1]
+
+    def delete(self):
+        if not self.heap:
+            raise IndexError("delete from an empty priority queue")
+        # Remove the highest priority item
+        priority, item = heapq.heappop(self.heap)
+        self.entry_finder.pop(item, None)
+        # For max-heap, invert the priority if needed
+        return item
+
+    def changePriority(self, item, new_priority):
+        # Check if the item exists
+        if item not in self.entry_finder:
+            print(f"Item {item} not found in the priority queue.")
+            return
+        # Remove the old item
+        self.delete_specific(item)
+        # Insert with the new priority
+        self.insert(item, new_priority)
+
+    def delete_specific(self, item):
+        # Removes a specific item from the heap
+        # Rebuilds the heap without the specific item
+        self.heap = [(p, i) for (p, i) in self.heap if i != item]
+        heapq.heapify(self.heap)
+        self.entry_finder.pop(item, None)
+
+    def display(self):
+        # Display the heap content
+        print([(priority if self.min_queue else -priority, item) for (priority, item) in self.heap])
+
+# Example Usage
+pq_min = PriorityQueueHeap(min_queue=True)
+pq_max = PriorityQueueHeap(min_queue=False)
+
+# Insertion
+pq_min.insert('Task A', 3)
+pq_min.insert('Task B', 1)
+pq_min.insert('Task C', 2)
+pq_min.display()
+
+pq_max.insert('Task A', 3)
+pq_max.insert('Task B', 1)
+pq_max.insert('Task C', 2)
+pq_max.display()
+
+# Peek
+print("Min Queue Peek:", pq_min.peek())
+print("Max Queue Peek:", pq_max.peek())
+
+# Delete
+print("Min Queue Delete:", pq_min.delete())
+pq_min.display()
+
+print("Max Queue Delete:", pq_max.delete())
+pq_max.display()
+
+# Change Priority
+pq_min.changePriority('Task C', 0)
+pq_min.display()
+
+pq_max.changePriority('Task A', 4)
+pq_max.display()
