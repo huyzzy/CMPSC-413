@@ -1,0 +1,104 @@
+class Node:
+    def __init__(self, priority, item):
+        self.priority = priority
+        self.item = item
+        self.next = None
+
+class PriorityQueueLinkedList:
+    def __init__(self, min_queue=True):
+        self.head = None
+        self.min_queue = min_queue  # True for min-priority, False for max-priority
+
+    def insert(self, item, priority):
+        new_node = Node(priority, item)
+        if self.head is None or (self.min_queue and priority < self.head.priority) or \
+           (not self.min_queue and priority > self.head.priority):
+            # Insert at the head
+            new_node.next = self.head
+            self.head = new_node
+        else:
+            # Traverse the list to find the proper position
+            current = self.head
+            while current.next and ((self.min_queue and current.next.priority <= priority) or \
+                                    (not self.min_queue and current.next.priority >= priority)):
+                current = current.next
+            # Insert the new node
+            new_node.next = current.next
+            current.next = new_node
+
+    def peek(self):
+        if self.head is None:
+            raise IndexError("peek from an empty priority queue")
+        # The head of the list is the highest priority item
+        return self.head.item
+
+    def delete(self):
+        if self.head is None:
+            raise IndexError("delete from an empty priority queue")
+        # Remove the head of the list
+        item = self.head.item
+        self.head = self.head.next
+        return item
+
+    def changePriority(self, item, new_priority):
+        # Find and remove the item
+        current = self.head
+        prev = None
+        found = False
+        while current:
+            if current.item == item:
+                found = True
+                # Remove the current node
+                if prev:
+                    prev.next = current.next
+                else:
+                    self.head = current.next
+                # Reinsert with the new priority
+                self.insert(item, new_priority)
+                return
+            prev = current
+            current = current.next
+        if not found:
+            print(f"Item {item} not found in the priority queue.")
+
+
+    def display(self):
+        current = self.head
+        elements = []
+        while current:
+            elements.append((current.priority, current.item))
+            current = current.next
+        print(elements)
+
+# Example Usage
+pq_min = PriorityQueueLinkedList(min_queue=True)
+pq_max = PriorityQueueLinkedList(min_queue=False)
+
+# Insertion
+pq_min.insert('Task A', 3)
+pq_min.insert('Task B', 1)
+pq_min.insert('Task C', 2)
+pq_min.display()
+
+pq_max.insert('Task A', 3)
+pq_max.insert('Task B', 1)
+pq_max.insert('Task C', 2)
+pq_max.display()
+
+# Peek
+print("Min Queue Peek:", pq_min.peek())
+print("Max Queue Peek:", pq_max.peek())
+
+# Delete
+print("Min Queue Delete:", pq_min.delete())
+pq_min.display()
+
+print("Max Queue Delete:", pq_max.delete())
+pq_max.display()
+
+# Change Priority
+pq_min.changePriority('Task C', 0)
+pq_min.display()
+
+pq_max.changePriority('Task A', 4)  
+pq_max.display()
