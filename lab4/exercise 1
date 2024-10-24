@@ -67,5 +67,5 @@ pq_max.display()
 pq_min.changePriority('Task C', 0)
 pq_min.display()
 
-pq_max.changePriority('Task A', 4)  # Should now print "Item Task A not found in the priority queue."
+pq_max.changePriority('Task A', 4) 
 pq_max.display()
