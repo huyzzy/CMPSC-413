@@ -1,0 +1,61 @@
+def bfs(graph, node):
+    visited = []
+    visited.append(node)
+    queue = []
+    queue.append(node)
+
+    while queue:
+        s = queue.pop(0)
+        for neighbour in graph[s]:
+            if neighbour not in visited:
+                visited.append(neighbour)
+                queue.append(neighbour)
+    return visited
+
+# Example graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D'],
+    'C': ['A', 'E'],
+    'D': ['B', 'E'],
+    'E': ['C', 'D', 'F'],
+    'F': ['E']
+}
+graph2 = {
+    'A': ['B', 'C', 'D'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A'],
+    'D': ['A', 'B', 'E', 'F'],
+    'E': ['B', 'D'],
+    'F': ['D']
+}
+# Perform BFS starting from node 'A'
+result = bfs(graph, 'A')
+print("BFS Traversal:", result)
+
+result2 = bfs(graph2, 'A')
+print("BFS Traversal:", result2)
+
+def dfs(graph, node):
+    visited = []
+    stack = []
+
+    stack.append(node)
+
+    while stack:
+        s = stack.pop()
+        if s not in visited:
+            visited.append(s)
+            # Add neighbors in reverse order to process them in the original order
+            for neighbour in reversed(graph[s]):
+                if neighbour not in visited:
+                    stack.append(neighbour)
+
+    return visited
+# Use an existing node in the graph as the starting point for DFS.
+result = dfs(graph, 'A')
+print("DFS Traversal of Graph 1:", result)
+
+
+result = dfs(graph2, 'A')
+print("DFS Traversal of Graph 2:", result)
