@@ -1,0 +1,87 @@
+import heapq
+from collections import defaultdict, namedtuple
+
+# Node for the Huffman Tree
+class Node:
+    def __init__(self, char=None, freq=0):
+        self.char = char
+        self.freq = freq
+        self.left = None
+        self.right = None
+
+    def __lt__(self, other):
+        return self.freq < other.freq
+
+# Task 1: Compute Huffman Codes
+def compute_huffman_codes(text):
+    # Frequency Analysis
+    frequency = defaultdict(int)
+    for char in text:
+        frequency[char] += 1
+
+    # Priority Queue (Min-Heap)
+    heap = [Node(char, freq) for char, freq in frequency.items()]
+    heapq.heapify(heap)
+
+    # Build Huffman Tree
+    while len(heap) > 1:
+        left = heapq.heappop(heap)
+        right = heapq.heappop(heap)
+        merged = Node(freq=left.freq + right.freq)
+        merged.left = left
+        merged.right = right
+        heapq.heappush(heap, merged)
+
+    # Generate Huffman Codes
+    root = heap[0]
+    huffman_codes = {}
+
+    def generate_codes(node, current_code=""):
+        if node is None:
+            return
+        if node.char is not None:
+            huffman_codes[node.char] = current_code
+        generate_codes(node.left, current_code + "0")
+        generate_codes(node.right, current_code + "1")
+
+    generate_codes(root)
+    return huffman_codes, root
+
+# Task 2: Encode and Decode Text
+def encode_text(text, huffman_codes):
+    encoded_text = ''.join(huffman_codes[char] for char in text)
+    return encoded_text
+
+def decode_text(encoded_text, huffman_tree):
+    decoded_text = []
+    node = huffman_tree
+    for bit in encoded_text:
+        if bit == "0":
+            node = node.left
+        else:
+            node = node.right
+        if node.char is not None:
+            decoded_text.append(node.char)
+            node = huffman_tree  # Reset to the root for the next character
+    return ''.join(decoded_text)
+
+# Main Function for User Interaction
+def huffman_encoding_decoding():
+    text = input("Enter the text: ")
+    huffman_codes, huffman_tree = compute_huffman_codes(text)
+    print("\nHuffman Codes for each character:")
+    for char, code in huffman_codes.items():
+        print(f"{char}: {code}")
+
+    # Encoding the text
+    encoded_text = encode_text(text, huffman_codes)
+    print("\nEncoded Text:")
+    print(encoded_text)
+
+    # Decoding the encoded text
+    decoded_text = decode_text(encoded_text, huffman_tree)
+    print("\nDecoded Text:")
+    print(decoded_text)
+
+# Run the main function
+huffman_encoding_decoding()
