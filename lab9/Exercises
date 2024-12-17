@@ -1,0 +1,77 @@
+graph = {
+    1: {2: 1, 3: 1},
+    2: {1: 1, 3: 1, 4: 1},
+    3: {1: 1, 2: 1, 4: 1, 5: 1},
+    4: {2: 1, 3: 1, 5: 1},
+    5: {3: 1, 4: 1}
+}
+
+# Dijkstra's algorithm for shortest path
+def dijkstra(graph, source, target):
+    import heapq
+    heap = [(0, source)]
+    distances = {node: float('inf') for node in graph}
+    distances[source] = 0
+    parents = {node: None for node in graph}
+
+    while heap:
+        (cost, current_node) = heapq.heappop(heap)
+
+        if current_node == target:
+            # Reconstruct the path
+            path = []
+            while current_node is not None:
+                path.append(current_node)
+                current_node = parents[current_node]
+            return list(reversed(path))
+
+        for neighbor, weight in graph[current_node].items():
+            new_cost = cost + weight
+            if new_cost < distances[neighbor]:
+                distances[neighbor] = new_cost
+                parents[neighbor] = current_node
+                heapq.heappush(heap, (new_cost, neighbor))
+
+    return None
+
+# Floyd-Warshall algorithm for all-pairs shortest paths
+def floyd_warshall(graph):
+    nodes = list(graph.keys())
+    dist = {u: {v: float('inf') for v in nodes} for u in nodes}
+    next_node = {u: {v: None for v in nodes} for u in nodes}
+
+    for u in graph:
+        for v, w in graph[u].items():
+            dist[u][v] = w
+            next_node[u][v] = v
+
+    for k in nodes:
+        for i in nodes:
+            for j in nodes:
+                if dist[i][j] > dist[i][k] + dist[k][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+                    next_node[i][j] = next_node[i][k]
+
+    return dist, next_node
+
+# Reconstructing path from Floyd-Warshall results
+def reconstruct_path(next_node, source, target):
+    if next_node[source][target] is None:
+        return None
+    path = [source]
+    while source != target:
+        source = next_node[source][target]
+        path.append(source)
+    return path
+
+# Determine which algorithm to use based on the starting node
+starting_node = int(input("Enter the starting node: "))
+ending_node = int(input("Enter the ending node: "))
+
+if starting_node == min(graph.keys()):
+    shortest_path = dijkstra(graph, starting_node, ending_node)
+else:
+    _, next_node = floyd_warshall(graph)
+    shortest_path = reconstruct_path(next_node, starting_node, ending_node)
+
+print(f"The shortest path from {starting_node} to {ending_node} is: {shortest_path}")
